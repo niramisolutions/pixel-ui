@@ -13,7 +13,11 @@ import ServiceCard from "@/components/sections/ServiceCard";
 // Layout falls back to the original two-column grid below `md` and whenever the visitor asks
 // for reduced motion — the `motion-safe:md:` variants below and the gsap.matchMedia query are
 // deliberately kept in sync.
-const CARDS_VISIBLE_AT_ONCE_WIDTH = "min(26rem,80vw)";
+//
+// Sized so all `services.length` cards sit side by side within the viewport from the start —
+// 4.5rem is 3 gaps (gap-6) between 4 cards. Clamped so it never shrinks below a usable floor
+// on narrow triggers or balloons past a sane max on ultrawide screens.
+const CARD_WIDTH = "clamp(9rem, calc((100vw - 4.5rem) / 4), 22rem)";
 
 export default function ServicesShowcase({ services, children }) {
   const wrapperRef = useRef(null);
@@ -33,7 +37,7 @@ export default function ServicesShowcase({ services, children }) {
         if (!entry.isIntersecting) return;
         observer.disconnect();
 
-        import("@/lib/gsap").then(({ gsap, ScrollTrigger }) => {
+        import("@/lib/gsap").then(({ gsap }) => {
           if (cancelled) return;
 
           const mm = gsap.matchMedia();
@@ -44,25 +48,11 @@ export default function ServicesShowcase({ services, children }) {
               const cards = Array.from(track.children);
               if (cards.length === 0) return;
 
-              // Measured rather than computed from the class list, so changing the card width
-              // or gap needs no matching change here.
-              const metrics = { start: 0, step: 0 };
-              const measure = () => {
-                gsap.set(track, { x: 0 });
-                const first = cards[0].getBoundingClientRect();
-                const second = cards[1]?.getBoundingClientRect();
-                metrics.step = second ? second.left - first.left : first.width;
-                // x that puts the first card in the middle of the viewport
-                metrics.start = (window.innerWidth - first.width) / 2 - first.left;
-              };
-
-              measure();
-              ScrollTrigger.addEventListener("refreshInit", measure);
-
-              const xForCard = (index) => () => metrics.start - index * metrics.step;
-
-              gsap.set(track, { x: metrics.start });
-              gsap.set(cards, { autoAlpha: 0, scale: 0.92 });
+              // Cards are sized (via CARD_WIDTH) to already sit side by side within the
+              // viewport, so the track never needs to slide horizontally — nothing carries an
+              // earlier card out of view when a later one arrives. Each card instead slides in
+              // right-to-left on its own, into its final resting slot in the row.
+              gsap.set(cards, { autoAlpha: 0, scale: 0.92, xPercent: 100 });
 
               const timeline = gsap.timeline({
                 scrollTrigger: {
@@ -74,26 +64,13 @@ export default function ServicesShowcase({ services, children }) {
                 },
               });
 
-              // First card arrives in the middle before anything starts moving.
-              timeline.to(
-                cards[0],
-                { autoAlpha: 1, scale: 1, duration: 0.7, ease: "power2.out" },
-                0,
-              );
-
-              for (let i = 1; i < cards.length; i++) {
-                const at = 0.7 + (i - 1);
-                // the track slides one card-width left...
-                timeline.to(track, { x: xForCard(i), duration: 1, ease: "none" }, at);
-                // ...and the next card fades up once that slide has opened room for it
+              cards.forEach((card, i) => {
                 timeline.to(
-                  cards[i],
-                  { autoAlpha: 1, scale: 1, duration: 0.65, ease: "power2.out" },
-                  at + 0.25,
+                  card,
+                  { autoAlpha: 1, scale: 1, xPercent: 0, duration: 0.7, ease: "power2.out" },
+                  i,
                 );
-              }
-
-              return () => ScrollTrigger.removeEventListener("refreshInit", measure);
+              });
             },
           );
 
@@ -131,7 +108,7 @@ export default function ServicesShowcase({ services, children }) {
               <div
                 key={service.title}
                 className="motion-safe:md:shrink-0"
-                style={{ "--card-w": CARDS_VISIBLE_AT_ONCE_WIDTH }}
+                style={{ "--card-w": CARD_WIDTH }}
               >
                 <div className="h-full motion-safe:md:w-[var(--card-w)]">
                   <ServiceCard service={service} />
