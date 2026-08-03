@@ -1,0 +1,70 @@
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-card-idle-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
+  }
+}
+
+.hero-fade-in {
+  animation: hero-fade-in 0.7s cubic-bezier(0.5, 0, 0.5, 1) both;
+}
+
+.hero-card-idle-float {
+  animation: hero-card-idle-float 4.5s ease-in-out infinite;
+}
+
+/* The headline flip is pure CSS and the characters ship pre-split in the markup, so it
+   starts at stylesheet parse instead of waiting on hydration + GSAP + SplitText. The h1 is
+   the LCP element; gating its visibility on a JS bundle was costing seconds of LCP. */
+/* Same values the GSAP tween used: rotationX -90, transformPerspective 700, opacity 0,
+   duration 0.7, ease back.out(1.5). Only the driver changed — CSS instead of GSAP + SplitText —
+   so the animation looks identical but no longer waits on hydration to start. */
+@keyframes hero-flip-in {
+  from {
+    transform: perspective(700px) rotateX(-90deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(700px) rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+.hero-flip-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* `backwards` holds the opening frame through the stagger delay and then releases the
+   transform entirely once the animation ends — the settled character carries no transform,
+   so the gradient spans clip their background exactly as they do without the animation. */
+.hero-flip-char {
+  display: inline-block;
+  transform-origin: 50% 50% -0.55em;
+  animation: hero-flip-in 0.7s cubic-bezier(0.34, 1.5, 0.64, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-in,
+  .hero-card-idle-float {
+    animation: none;
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .hero-flip-char {
+    animation: none;
+  }
+}

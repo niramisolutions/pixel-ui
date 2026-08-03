@@ -1,0 +1,109 @@
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: #fafafa;
+  --color-surface: #f6f7f9;
+  --color-surface-strong: #fefefe;
+  --color-border: #e8ecea;
+
+  --color-ink: #081612;
+  --color-ink-mid: #123126;
+  --color-ink-deep: #07423c;
+
+  --color-accent: #c2f96a;
+  --color-accent-soft: #ddff8c;
+  --color-accent-mid: #7be681;
+  --color-accent-strong: #34d399;
+
+  --color-muted: #60645d;
+  --color-muted-2: #67706f;
+  --color-muted-3: #5a5e68;
+  --color-success: #4caf50;
+  --color-success-text: #167634;
+
+  --shadow-blur-sm: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* The header is sticky, so it occupies layout space above the hero — a 100vh hero would push
+   its own bottom that far below the fold. Measured from the rendered header: 63px until the
+   Schedule Consultation button appears at lg, 77px after. */
+:root {
+  --header-h: 63px;
+  /* Everything in the hero except the stage: section padding, headline, lead, CTAs and the
+     gap above the dashboard. The stage is sized from whatever height is left over, so a flat
+     vh cap does not have to be conservative enough for both a 768px and a 1080px screen. */
+  --hero-chrome: 320px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 77px;
+    --hero-chrome: 300px;
+  }
+}
+
+@utility bg-gradient-dark {
+  background-image: linear-gradient(
+    103deg,
+    var(--color-ink) 7%,
+    var(--color-ink-deep) 158%
+  );
+}
+
+@utility bg-gradient-ink {
+  background-image: linear-gradient(
+    145deg,
+    var(--color-ink) 0%,
+    var(--color-ink-mid) 38%
+  );
+}
+
+@utility border-gradient-accent {
+  border: 2px solid transparent;
+  background-image:
+    linear-gradient(145deg, var(--color-ink) 0%, var(--color-ink-mid) 38%),
+    linear-gradient(
+      180deg,
+      var(--color-accent) 0%,
+      var(--color-accent-strong) 100%
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+@utility bg-gradient-accent {
+  background-image: linear-gradient(
+    139deg,
+    var(--color-accent) 4%,
+    var(--color-accent-mid) 82%,
+    var(--color-accent-strong) 168%
+  );
+}
+
+@utility text-gradient-accent {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-accent-strong) 20%,
+    var(--color-accent) 50%,
+    #057c09 87%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-dot-grid {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+/* structural texture for dark sections — also what backdrop-blur panels blur against,
+   since a smooth gradient gives a glass effect nothing to work with */
+@utility bg-line-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
