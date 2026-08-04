@@ -31,7 +31,7 @@ function LazyModel({ src, config }) {
 // a banner and the deliverables run in two columns, which fits every label on one line.
 export default function ServiceCard({ service }) {
   return (
-    <div className="group relative h-full rounded-3xl p-2 border-gradient-accent shadow-[0px_2px_2px_0px_rgba(0,0,0,0.1)]">
+    <div className="group @container relative h-full rounded-3xl p-2 border-gradient-accent shadow-[0px_2px_2px_0px_rgba(0,0,0,0.1)]">
       <div className="relative z-10 flex h-full flex-col gap-4 rounded-2xl border border-accent p-4 shadow-[inset_0px_2px_0px_0px_var(--color-accent)]">
         {/* 3D model parked in favour of static art — restore this line and drop the banner
             below to bring the GLB viewers back:
@@ -46,7 +46,7 @@ export default function ServiceCard({ service }) {
             src={service.image}
             alt={`${service.title} illustration`}
             fill
-            sizes="(min-width: 768px) 26rem, 90vw"
+            sizes="(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 90vw"
             className="object-contain p-2 transition-transform duration-500 group-hover:scale-[1.04]"
             loading="lazy"
           />
@@ -60,8 +60,15 @@ export default function ServiceCard({ service }) {
         </div>
 
         {/* mt-auto keeps the rule and deliverables on the same baseline across all four cards,
-            which otherwise drift apart because the descriptions differ in length */}
-        <ul className="mt-auto grid grid-cols-1 gap-x-3 gap-y-1.5 border-t border-accent/25 pt-3.5 sm:grid-cols-2">
+            which otherwise drift apart because the descriptions differ in length.
+
+            Two columns are keyed off the card's own width (@container), not the viewport: the
+            same card renders ~600px wide stacked on a phone, ~430px 2-up on a tablet and up to
+            22rem in the pinned row, so a viewport breakpoint gets it wrong in at least one of
+            them. 25rem is measured: below it the longest labels ("Backup & Disaster Recovery",
+            "Internal Business Systems") wrap onto a second line and the two columns stop lining
+            up row for row, which looks worse than a single clean column. */}
+        <ul className="mt-auto grid grid-cols-1 gap-x-3 gap-y-1.5 border-t border-accent/25 pt-3.5 @[25rem]:grid-cols-2">
           {service.items.map((item) => (
             <li
               key={item}

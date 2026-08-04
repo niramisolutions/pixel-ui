@@ -10,14 +10,21 @@ import ServiceCard from "@/components/sections/ServiceCard";
 // spacer element the moment the trigger is created, which grows the document by the full pin
 // distance and registers as a layout shift. Sticky reserves that height from the first paint.
 //
-// Layout falls back to the original two-column grid below `md` and whenever the visitor asks
-// for reduced motion — the `motion-safe:md:` variants below and the gsap.matchMedia query are
-// deliberately kept in sync.
+// Layout falls back to a static grid below `xl` and whenever the visitor asks for reduced
+// motion — one column on phones, 2x2 from `md` up — and the `motion-safe:xl:` variants below
+// are deliberately kept in sync with the gsap.matchMedia query.
+//
+// The pinned row starts at `xl` (1280px), not `md`. Four cards across a tablet leave each one
+// 180px (768px portrait) to 238px (1024px landscape) wide: the titles wrap to two lines, the
+// descriptions run seven, and the art shrinks below the point where it reads. The 2x2 grid
+// gives the same card 330px at 768px and 434px at 1024px.
 //
 // Sized so all `services.length` cards sit side by side within the viewport from the start —
-// 4.5rem is 3 gaps (gap-6) between 4 cards. Clamped so it never shrinks below a usable floor
-// on narrow triggers or balloons past a sane max on ultrawide screens.
-const CARD_WIDTH = "clamp(9rem, calc((100vw - 4.5rem) / 4), 22rem)";
+// 4.5rem is 3 gaps (gap-6) between 4 cards, 4rem is a 2rem gutter each side so the outer two
+// cards don't sit flush against the edges (`overflow-x-clip` on the parent was shaving their
+// border gradient off at every width from 1280 up to ~1500). Clamped so it never shrinks below
+// a usable floor on narrow triggers or balloons past a sane max on ultrawide screens.
+const CARD_WIDTH = "clamp(9rem, calc((100vw - 4.5rem - 4rem) / 4), 22rem)";
 
 export default function ServicesShowcase({ services, children }) {
   const wrapperRef = useRef(null);
@@ -43,7 +50,7 @@ export default function ServicesShowcase({ services, children }) {
           const mm = gsap.matchMedia();
 
           mm.add(
-            "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+            "(min-width: 1280px) and (prefers-reduced-motion: no-preference)",
             () => {
               const cards = Array.from(track.children);
               if (cards.length === 0) return;
@@ -67,7 +74,13 @@ export default function ServicesShowcase({ services, children }) {
               cards.forEach((card, i) => {
                 timeline.to(
                   card,
-                  { autoAlpha: 1, scale: 1, xPercent: 0, duration: 0.7, ease: "power2.out" },
+                  {
+                    autoAlpha: 1,
+                    scale: 1,
+                    xPercent: 0,
+                    duration: 0.7,
+                    ease: "power2.out",
+                  },
                   i,
                 );
               });
@@ -93,24 +106,26 @@ export default function ServicesShowcase({ services, children }) {
     <div
       ref={wrapperRef}
       style={{ "--service-steps": services.length }}
-      className="motion-safe:md:h-[calc(var(--service-steps)*100vh)]"
+      className="motion-safe:xl:h-[calc(var(--service-steps)*100vh)]"
     >
-      <div className="flex flex-col gap-14 py-24 motion-safe:md:sticky motion-safe:md:top-0 motion-safe:md:h-screen motion-safe:md:justify-center motion-safe:md:py-0">
-        <div className="mx-auto w-full max-w-6xl px-6 lg:px-16">{children}</div>
+      <div className="flex flex-col gap-14 py-24 motion-safe:xl:sticky motion-safe:xl:top-0 motion-safe:xl:h-screen motion-safe:xl:justify-center motion-safe:xl:py-0">
+        <div className="mx-auto w-full max-w-6xl px-6 md:px-10 lg:px-16">
+          {children}
+        </div>
 
         {/* clips the track where it runs past the viewport, so the page gains no sideways scroll */}
         <div className="w-full overflow-x-clip">
           <div
             ref={trackRef}
-            className="mx-auto grid w-full max-w-6xl gap-6 px-6 md:grid-cols-2 lg:px-16 motion-safe:md:flex motion-safe:md:w-max motion-safe:md:max-w-none motion-safe:md:px-0"
+            className="mx-auto grid w-full max-w-6xl gap-6 px-6 md:grid-cols-2 md:gap-7 md:px-10 lg:px-16 motion-safe:xl:flex motion-safe:xl:w-max motion-safe:xl:max-w-none motion-safe:xl:px-0"
           >
             {services.map((service) => (
               <div
                 key={service.title}
-                className="motion-safe:md:shrink-0"
+                className="motion-safe:xl:shrink-0"
                 style={{ "--card-w": CARD_WIDTH }}
               >
-                <div className="h-full motion-safe:md:w-[var(--card-w)]">
+                <div className="h-full motion-safe:xl:w-[var(--card-w)]">
                   <ServiceCard service={service} />
                 </div>
               </div>

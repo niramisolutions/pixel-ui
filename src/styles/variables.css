@@ -42,6 +42,12 @@
   }
 }
 
+/* Every in-page anchor (#services, #contact, …) is linked from the header, the hero and the
+   footer. Without this the sticky header lands on top of the target section's own heading. */
+html {
+  scroll-padding-top: var(--header-h);
+}
+
 @utility bg-gradient-dark {
   background-image: linear-gradient(
     103deg,
