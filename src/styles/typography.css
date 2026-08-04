@@ -42,14 +42,29 @@
   }
 }
 
+/* From lg up the headline has to keep climbing, and not only for presence: .text-section-title
+   reaches 2.5rem at this same breakpoint, so a display capped at 2rem left every section
+   heading on the page rendering LARGER than the h1 above it. Each step below was checked
+   against the hero's one-viewport budget — the tallest cost is 2 lines, so 3rem adds ~36px
+   over the old 2rem, which is why --hero-chrome had to be re-measured alongside it. */
 @media (min-width: 1024px) {
   .text-display {
-    font-size: 2rem;
+    font-size: 2.25rem;
+  }
+
+  .text-section-title {
+    font-size: 2.5rem;
   }
 }
 
-@media (min-width: 1024px) {
-  .text-section-title {
+@media (min-width: 1280px) {
+  .text-display {
     font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .text-display {
+    font-size: 3rem;
   }
 }

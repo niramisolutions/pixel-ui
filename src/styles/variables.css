@@ -42,6 +42,18 @@
   }
 }
 
+/* .text-display steps up to 3rem here, which costs the headline ~18px over the 1280 tier.
+   Derive this the way the others should be read: --hero-chrome has to cover everything the
+   stage does NOT get, which is the measured height above the stage (280px at this tier) PLUS
+   the section's own py-6 bottom padding (24px). That bottom padding was missing from the
+   original estimate at every tier — the slack in the old 2rem headline hid it, and 1536 was
+   the width where it finally showed up as a 5px overflow past the fold. */
+@media (min-width: 1536px) {
+  :root {
+    --hero-chrome: 310px;
+  }
+}
+
 /* Every in-page anchor (#services, #contact, …) is linked from the header, the hero and the
    footer. Without this the sticky header lands on top of the target section's own heading. */
 html {

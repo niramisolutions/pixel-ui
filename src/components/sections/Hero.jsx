@@ -35,7 +35,9 @@ function FlipHeadline() {
           <span
             key={i}
             className="hero-flip-char"
-            style={{ animationDelay: `${(charIndex++ * CHAR_STAGGER).toFixed(3)}s` }}
+            style={{
+              animationDelay: `${(charIndex++ * CHAR_STAGGER).toFixed(3)}s`,
+            }}
           >
             {char}
           </span>
@@ -71,17 +73,31 @@ export default function Hero() {
         >
           <FlipHeadline />
         </h1>
-        <p className="text-lead max-w-2xl text-ink/60 text-[0.875rem]! leading-snug max-sm:text-[0.78125rem]!">
+        {/* Sizes are set directly rather than through text-lead: every one of that utility's
+            properties was already being overridden here, two of them with !important, so the
+            class read as if the lead scale applied when it did not.
+            Deliberately stops at 14px: at 16px this copy wraps to a third line inside max-w-2xl,
+            which costs 27px and is what broke the hero's one-viewport fit at 1280 and up. */}
+        <p className="max-w-2xl text-[0.78125rem] leading-snug tracking-[-0.025em] text-ink/60 sm:text-[0.875rem]">
           PixelUI helps organizations modernize operations through AI
           Automation, Custom SaaS Development, Data Analytics, and Managed IT
           Services building secure, scalable, and future-ready technology
           solutions.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-1 sm:gap-4">
-          <Button href="#contact" variant="dark" icon={ArrowRight} className="max-sm:px-3 max-sm:py-3">
+          <Button
+            href="#contact"
+            variant="dark"
+            icon={ArrowRight}
+            className="max-sm:px-3 max-sm:py-3"
+          >
             Schedule Consultation
           </Button>
-          <Button href="#services" variant="secondary" className="max-sm:px-3 max-sm:py-3">
+          <Button
+            href="#services"
+            variant="secondary"
+            className="max-sm:px-3 max-sm:py-3"
+          >
             Explore Services
           </Button>
         </div>

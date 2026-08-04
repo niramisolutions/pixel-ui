@@ -157,10 +157,10 @@ export default function HeroDashboard() {
       const rect = stageRef.current?.getBoundingClientRect();
       const over = Boolean(
         rect &&
-          event.clientX >= rect.left &&
-          event.clientX <= rect.right &&
-          event.clientY >= rect.top &&
-          event.clientY <= rect.bottom,
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom,
       );
       if (over !== overRef.current) {
         overRef.current = over;
@@ -209,8 +209,14 @@ export default function HeroDashboard() {
   return (
     // width is capped against viewport height so the 3:2 stage can never grow taller than the
     // space the hero has left; the chips are positioned against this box, so shrinking the box
-    // rather than the stage alone keeps them pinned to the artwork
-    <div className="relative mx-auto mt-6 w-full max-w-[min(64rem,calc((100svh-var(--header-h)-var(--hero-chrome))*1.5))]">
+    // rather than the stage alone keeps them pinned to the artwork.
+    //
+    // The max(26rem, …) floor is load-bearing. Without it the height term collapses on a short
+    // viewport — a 844x390 phone in landscape has 390 - 63 - 320 = 7px of budget, and the stage
+    // rendered 11px wide, an invisible sliver. No arrangement of headline + lead + buttons + a
+    // 3:2 image fits 390px of height, so the honest trade is to hold the stage at a readable
+    // size and let the hero scroll on those viewports.
+    <div className="relative mx-auto mt-6 w-full max-w-[min(64rem,max(26rem,calc((100svh-var(--header-h)-var(--hero-chrome))*1.5)))]">
       <Stage item={active} isOver={isOver} stageRef={stageRef} />
 
       {/* one set of chips for both layouts: a single scrolling row under the stage on phones

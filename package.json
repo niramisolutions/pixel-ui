@@ -29,6 +29,7 @@
     "@gltf-transform/cli": "^4.4.2",
     "@tailwindcss/postcss": "^4",
     "autoprefixer": "^10.5.4",
+    "basic-ftp": "^6.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "eslint-config-prettier": "^10.1.8",
